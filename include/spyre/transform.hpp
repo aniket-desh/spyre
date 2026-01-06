@@ -58,6 +58,9 @@ public:
     int m_max() const { return m_max_; }
     size_t num_coeffs() const { return num_coeffs_; }
 
+    // get coefficient index for (l, m)
+    size_t coeff_index(int l, int m) const;
+
     // compute power spectrum: P(l) = sum_m |f_lm|^2
     vector_t power_spectrum(const sh_coeffs_t& coeffs) const;
 

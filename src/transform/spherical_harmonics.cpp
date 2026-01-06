@@ -265,6 +265,14 @@ sh_coeffs_t spherical_transform::allocate_coeffs() const {
     return sh_coeffs_t::Zero(static_cast<Eigen::Index>(num_coeffs_));
 }
 
+size_t spherical_transform::coeff_index(int l, int m) const {
+#ifdef SPYRE_USE_SHTNS
+    return static_cast<size_t>(LiM(shtns_, l, m));
+#else
+    return sh_index(l, m);
+#endif
+}
+
 void spherical_transform::laplacian(const sh_coeffs_t& in, sh_coeffs_t& out, real_t radius) const {
     out.resize(in.size());
     real_t r2_inv = 1.0 / (radius * radius);

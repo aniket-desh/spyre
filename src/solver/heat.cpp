@@ -131,7 +131,7 @@ void heat_solver::step_implicit(real_t dt) {
     for (int l = 0; l <= l_max; ++l) {
         real_t factor = 1.0 / (1.0 + dt * kappa_ * l * (l + 1));
         for (int m = 0; m <= std::min(l, m_max); ++m) {
-            size_t idx = sh_index(l, m);
+            size_t idx = sht_->coeff_index(l, m);
             coeffs_(static_cast<Eigen::Index>(idx)) *= factor;
         }
     }
@@ -244,7 +244,7 @@ void reaction_diffusion_solver::step(real_t dt) {
     for (int l = 0; l <= l_max; ++l) {
         real_t factor = 1.0 / (1.0 + dt * D_ * l * (l + 1));
         for (int m = 0; m <= std::min(l, m_max); ++m) {
-            size_t idx = sh_index(l, m);
+            size_t idx = sht_->coeff_index(l, m);
             coeffs_(static_cast<Eigen::Index>(idx)) *= factor;
         }
     }
