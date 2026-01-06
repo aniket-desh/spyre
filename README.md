@@ -1,5 +1,5 @@
 # spyre $\odot$
-fast, efficient library for solving pdes on a sphere with python bindings.
+a fast, efficient library for solving pdes on a sphere with python bindings.
 
 ## features
 
