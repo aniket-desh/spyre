@@ -1,0 +1,35 @@
+# build
+build/
+cmake-build-*/
+*.o
+*.a
+*.so
+*.dylib
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+dist/
+*.whl
+.venv/
+
+# ide
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# generated
+*.mp4
+*.gif
+*.png
+
+# macos
+.DS_Store
+
+# external deps
+shtns/

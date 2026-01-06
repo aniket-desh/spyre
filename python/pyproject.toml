@@ -1,0 +1,71 @@
+[build-system]
+requires = ["scikit-build-core>=0.5", "pybind11>=2.11"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "spyre"
+version = "0.1.0"
+description = "fast spherical pde solver library"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "spyre contributors"}
+]
+keywords = ["pde", "sphere", "spherical-harmonics", "simulation", "scientific-computing"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: C++",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "numpy>=1.21",
+]
+
+[project.optional-dependencies]
+viz = [
+    "matplotlib>=3.5",
+    "cartopy>=0.21",
+    "plotly>=5.0",
+]
+all = [
+    "spyre[viz]",
+    "scipy>=1.9",
+    "xarray>=2023.0",
+    "netcdf4>=1.6",
+]
+dev = [
+    "spyre[all]",
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.urls]
+homepage = "https://github.com/spyre-dev/spyre"
+documentation = "https://spyre.readthedocs.io"
+repository = "https://github.com/spyre-dev/spyre"
+
+[tool.scikit-build]
+cmake.minimum-version = "3.18"
+cmake.build-type = "Release"
+wheel.packages = ["spyre"]
+sdist.include = ["CMakeLists.txt", "include/**", "src/**"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
