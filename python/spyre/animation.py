@@ -66,15 +66,21 @@ def animate(
         theta = np.asarray(g.latitudes)[:, np.newaxis]
         phi = np.asarray(g.longitudes)[np.newaxis, :]
 
-        x = np.sin(theta) * np.cos(phi)
-        y = np.sin(theta) * np.sin(phi)
-        z = np.cos(theta) * np.ones_like(phi)
+        # close the mesh at the longitude seam by appending first column
+        phi_closed = np.concatenate([phi, phi[:, :1] + 2 * np.pi], axis=1)
+
+        x = np.sin(theta) * np.cos(phi_closed)
+        y = np.sin(theta) * np.sin(phi_closed)
+        z = np.cos(theta) * np.ones_like(phi_closed)
 
         norm = plt.Normalize(vmin=vmin, vmax=vmax)
         data = np.asarray(history.fields[0].data)
-        colors = cm.get_cmap(cmap)(norm(data))
+        # close the data array to match the mesh
+        data_closed = np.concatenate([data, data[:, :1]], axis=1)
+        colors = cm.get_cmap(cmap)(norm(data_closed))
 
-        surf = ax.plot_surface(x, y, z, facecolors=colors, shade=False)
+        surf = ax.plot_surface(x, y, z, facecolors=colors, shade=False,
+                               rstride=1, cstride=1, antialiased=True)
         ax.set_box_aspect([1, 1, 1])
         ax.set_axis_off()
         txt = ax.set_title(title.format(t=history.times[0]))
@@ -83,8 +89,10 @@ def animate(
             nonlocal surf
             surf.remove()
             data = np.asarray(history.fields[frame].data)
-            colors = cm.get_cmap(cmap)(norm(data))
-            surf = ax.plot_surface(x, y, z, facecolors=colors, shade=False)
+            data_closed = np.concatenate([data, data[:, :1]], axis=1)
+            colors = cm.get_cmap(cmap)(norm(data_closed))
+            surf = ax.plot_surface(x, y, z, facecolors=colors, shade=False,
+                                   rstride=1, cstride=1, antialiased=True)
             txt.set_text(title.format(t=history.times[frame]))
             return [surf, txt]
 

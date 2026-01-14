@@ -18,10 +18,12 @@ print(f"grid: {grid.n_lat} x {grid.n_lon}")
 u0 = spyre.field(grid)
 def initial_condition(theta, phi):
     # main blob at theta=pi/4, phi=0
-    blob1 = np.exp(-((theta - np.pi/4)**2 + phi**2) / 0.08)
+    # use proper angular distance for phi (handles wrap-around)
+    dphi1 = np.minimum(np.abs(phi), 2 * np.pi - np.abs(phi))
+    blob1 = np.exp(-((theta - np.pi/4)**2 + dphi1**2) / 0.08)
     # second blob at theta=3pi/4, phi=pi
-    phi_wrapped = phi - np.pi if phi > np.pi else phi + np.pi
-    blob2 = 0.5 * np.exp(-((theta - 3*np.pi/4)**2 + phi_wrapped**2) / 0.08)
+    dphi2 = np.minimum(np.abs(phi - np.pi), 2 * np.pi - np.abs(phi - np.pi))
+    blob2 = 0.5 * np.exp(-((theta - 3*np.pi/4)**2 + dphi2**2) / 0.08)
     return blob1 + blob2
 
 u0.from_function(initial_condition)

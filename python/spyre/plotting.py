@@ -138,9 +138,14 @@ def plot3d(
     theta = np.asarray(g.latitudes)[:, np.newaxis]  # colatitude
     phi = np.asarray(g.longitudes)[np.newaxis, :]   # longitude
 
-    x = np.sin(theta) * np.cos(phi)
-    y = np.sin(theta) * np.sin(phi)
-    z = np.cos(theta) * np.ones_like(phi)
+    # close the mesh at the longitude seam by appending first column
+    phi_closed = np.concatenate([phi, phi[:, :1] + 2 * np.pi], axis=1)
+    theta_closed = np.concatenate([theta, theta], axis=1)
+    data_closed = np.concatenate([data, data[:, :1]], axis=1)
+
+    x = np.sin(theta_closed) * np.cos(phi_closed)
+    y = np.sin(theta_closed) * np.sin(phi_closed)
+    z = np.cos(theta_closed)
 
     if vmin is None:
         vmin = data.min()
@@ -150,13 +155,10 @@ def plot3d(
     if backend == "plotly":
         import plotly.graph_objects as go
 
-        # normalize data for coloring
-        colors = (data - vmin) / (vmax - vmin + 1e-10)
-
         fig = go.Figure(data=[
             go.Surface(
                 x=x, y=y, z=z,
-                surfacecolor=data,
+                surfacecolor=data_closed,
                 colorscale=cmap,
                 cmin=vmin,
                 cmax=vmax,
@@ -186,9 +188,10 @@ def plot3d(
         ax = fig.add_subplot(111, projection="3d")
 
         norm = plt.Normalize(vmin=vmin, vmax=vmax)
-        colors = cm.get_cmap(cmap)(norm(data))
+        colors = cm.get_cmap(cmap)(norm(data_closed))
 
-        ax.plot_surface(x, y, z, facecolors=colors, shade=False, **kwargs)
+        ax.plot_surface(x, y, z, facecolors=colors, shade=False,
+                        rstride=1, cstride=1, antialiased=True, **kwargs)
 
         if wireframe:
             ax.plot_wireframe(x, y, z, color="gray", linewidth=0.3, alpha=0.3)
