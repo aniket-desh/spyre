@@ -4,29 +4,37 @@ a fast, efficient library for solving pdes on a sphere with python bindings.
 ## features
 
 - **spherical harmonic transforms** - wrapped shtns for O(n² log n) transforms
-- **spectral pde solvers** - heat equation, advection (more coming)
+- **spectral pde solvers** - heat equation, advection, reaction-diffusion
 - **time integration** - euler, rk4, ssp-rk3, imex schemes
 - **visualization** - 3d sphere plots, 2d map projections, animations
 - **python bindings** - numpy-compatible via pybind11
 
-## dependencies
+## installation
 
-```
-c++: eigen, fftw3, shtns, pybind11
-python: numpy, matplotlib
-```
-
-## build
+### python package
 
 ```bash
 # install dependencies (macos)
-brew install eigen fftw
+brew install cmake eigen fftw
 
 # build shtns from source
 git clone https://bitbucket.org/nschaeff/shtns.git
 cd shtns && ./configure --enable-openmp && make && sudo make install
 
-# build spyre
+# install spyre python package
+pip install python/
+
+# or with visualization dependencies
+pip install python/[viz]
+
+# or with all optional dependencies
+pip install python/[all]
+```
+
+### c++ library only
+
+```bash
+# build c++ library
 mkdir build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j8
@@ -98,11 +106,29 @@ int main() {
 ### solvers
 - `heat_solver(grid, diffusivity, method)` - diffusion equation
 - `solver.solve(t_final, dt, save_every)` - returns solution history
+- `solver.set_initial_condition(field)` - set initial state
 
 ### visualization
-- `spyre.plot(field, projection="mollweide")` - 2d map
-- `spyre.plot3d(field)` - interactive 3d globe
-- `spyre.animate(history, output="file.mp4")` - animation
+- `spyre.plot(field, projection="mollweide")` - 2d map (mollweide, orthographic, robinson, platecarree)
+- `spyre.plot3d(field, backend="plotly")` - interactive 3d globe (plotly or matplotlib)
+- `spyre.plot_coefficients(field)` - power spectrum
+- `spyre.animate(history, output="file.mp4")` - animation (3d or 2d projections)
+- `spyre.animate_interactive(history)` - interactive animation widget
+
+## examples
+
+See `examples/` directory for comprehensive demos:
+- `heat_animation_demo.py` - gaussian blobs diffusing and merging
+- `heat_pole_to_pole.py` - meridional heat transfer
+- `heat_spherical_harmonics.py` - spectral accuracy test
+- `heat_rings.py` - concentric ring diffusion patterns
+- `heat_checkerboard.py` - high-frequency diffusion
+- `heat_diffusivity_comparison.py` - parameter study
+
+Run any example:
+```bash
+python examples/heat_pole_to_pole.py
+```
 
 ## license
 
