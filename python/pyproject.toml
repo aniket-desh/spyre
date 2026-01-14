@@ -54,7 +54,8 @@ documentation = "https://spyre.readthedocs.io"
 repository = "https://github.com/spyre-dev/spyre"
 
 [tool.scikit-build]
-cmake.minimum-version = "3.18"
+cmake.source-dir = ".."
+cmake.version = ">=3.18"
 cmake.build-type = "Release"
 wheel.packages = ["spyre"]
 sdist.include = ["CMakeLists.txt", "include/**", "src/**"]
